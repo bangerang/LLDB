@@ -39,7 +39,7 @@ def createOrTouchFilePath(filepath, dtrace_script):
 
 def generateDTraceScript(debugger):
     target = debugger.GetSelectedTarget()
-        path = target.executable.fullpath
+    path = target.executable.fullpath
     section = target.module[path].section['__DATA']
     start_address = section.GetLoadAddress(target)
     end_address = start_address + section.size

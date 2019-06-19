@@ -7,7 +7,7 @@ import optparse
 
 def __lldb_init_module(debugger, internal_dict):
     debugger.HandleCommand(
-    'command script add -f mom.handle_command mom')
+    'command script add -f mom.handle_command print_mom')
 
 def handle_command(debugger, command, result, internal_dict):
     '''
@@ -24,14 +24,10 @@ def handle_command(debugger, command, result, internal_dict):
 
     # Uncomment if you are expecting at least one argument
     # clean_command = shlex.split(args[0])[0]
-    target = debugger.GetSelectedTarget()
-    result.AppendMessage(findMainViewModelBridge(target))
-
-def findMainViewModelBridge(target):
-    instances = target.FindGlobalVariables('gInstance', 100)
-    for value in instances:
-        if "PHeadMainViewModelBridge" in value.GetDisplayTypeName():
-            return value.GetChildMemberWithName('_viewModel').GetChildAtIndex(0).GetChildAtIndex(0).GetChildAtIndex(0).GetValue()
+    res = lldb.SBCommandReturnObject()
+    lldb.debugger.GetCommandInterpreter().HandleCommand("po [GetMainViewModelInstance() getMOM:(NSArray*)@[]]", res)
+    returnVal = res.GetOutput()
+    result.AppendMessage(returnVal)
 
 
 def generateOptionParser():
